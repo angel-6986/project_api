@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from datetime import datetime
@@ -5,10 +6,16 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 #database file name
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sensor_data.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sensor_data.db")
+
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 #the engine
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+if "sqlite" in DATABASE_URL:
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 
 #session maker to talk to the database
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

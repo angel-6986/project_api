@@ -3,7 +3,7 @@ import random
 import time
 import json
 
-API_URL = "http://127.0.0.1:8000/api/v1/sensors/data"
+API_URL = "https://project-api-am.onrender.com"
 
 def simulate_hardware():
     print("Starting hardware simulation... Press Ctrl+C to stop")

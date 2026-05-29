@@ -6,14 +6,35 @@ function App() {
 
   useEffect(() => {
     // Fetch data from your live Render API
-    fetch("https://project-api-am.onrender.com/api/v1/sensors/data")
-      .then(response => response.json())
-      .then(data => {
-        // Your API returns {"total_records": X, "data": [...] }
-        setSensorData(data.data);
-        setLoading(false);
-      })
-      .catch(error => console.error("Error fetching data:", error));
+    //Added fetch logic to reusable function
+    const fetchSensorData = () => {
+      fetch("https://project-api-am.onrender.com/api/v1/sensors/data")
+        .then(response => response.json())
+        .then(data => {
+          // Pull array of records
+          let records = [];
+          if(data && Array.isArray(data.data)) {
+            records = data.data;
+          } else if( Array.isArray(data) ) {
+            records = data;
+          }
+
+          //Sort by timestamp, newest first, then grab top 12
+          const sortedData = records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          const top12Data = sortedData.slice(0, 12);
+
+          setSensorData(top12Data);
+          setLoading(false);
+        })
+        .catch(error => console.error("Error fetching data:", error));
+    };
+
+    fetchSensorData();
+
+    // poll every 5 seconds for new data
+    const interval = setInterval(fetchSensorData, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

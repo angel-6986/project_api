@@ -40,9 +40,21 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8 font-sans">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-blue-400 border-b border-gray-700 pb-4">
+        <div classname="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
+        <h1 className="text-4xl font-bold mb-8 text-blue-400">
           IoT Sensor Dashboard
         </h1>
+        {/* Addd pulse indicator to show its live */}
+        {!loading && (
+          <div classname= "flex items-center text-sm text-gray-400">
+            <span className="relative flex h-3 w-3 mr-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            Live Sync Active
+          </div>
+        )}
+        </div>
         
         {loading ? (
           <p className="text-gray-400 animate-pulse text-lg">Loading secure data from cloud...</p>

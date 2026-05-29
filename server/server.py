@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from fastapi.middleware.cors import CORSMiddleware
 
 #database file name
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sensor_data.db")
@@ -37,6 +38,14 @@ class SensorDataDB(Base):
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Sensor API", version="1.0")
+#Allow CORS for frontend development
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Allows any website (like your local React app) to read the data
+    allow_credentials=True,
+    allow_methods=["*"], # Allows GET, POST, etc.
+    allow_headers=["*"],
+)
 
 class SensorReading(BaseModel):
     sensor_id: str
